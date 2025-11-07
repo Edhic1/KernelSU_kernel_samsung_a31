@@ -1,0 +1,104 @@
+name: Build KernelSU Kernel
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (optional)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Kernel by ${{ github.actor }}
+    runs-on: ubuntu-22.04
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_HARDLINK: "true"
+      CCACHE_MAXSIZE: "2G"
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Load config.env
+      run: |
+        if [ -f config.env ]; then
+          grep -v -E "^#|^\n" config.env | sed 's/ #.*//; s/#.*//' >> $GITHUB_ENV
+        else
+          echo "config.env not found, using defaults"
+        fi
+
+    - name: Free Disk Space (Optional)
+      if: env.REMOVE_UNUSED_PACKAGES == 'true' || env.REMOVE_UNUSED_PACKAGES == ''
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        android: false
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: false
+
+    - name: Set Swap Space (6GB)
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 6
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          bc bison build-essential ccache curl flex git libelf-dev \
+          libssl-dev lz4 ncurses-dev python3 unzip wget xz-utils zstd \
+          clang lld libstdc++-12-dev lib32z1-dev gcc-multilib g++-multilib
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ccache-${{ runner.os }}-${{ hashFiles('**/buildKernel.sh') }}
+        max-size: 2G
+
+    - name: Download Proton Clang
+      run: |
+        mkdir -p toolchains
+        cd toolchains
+        git clone https://github.com/kdrag0n/proton-clang --depth=1 .
+        echo "PATH=$GITHUB_WORKSPACE/toolchains/bin:$PATH" >> $GITHUB_ENV
+
+    - name: Build Kernel with buildKernel.sh
+      run: |
+        chmod +x buildKernel.sh
+        ./buildKernel.sh
+
+    - name: Prepare Artifact
+      run: |
+        mkdir -p artifact
+        find out/arch/arm64/boot -name "Image*" -o -name "*.gz" -o -name "*.dtb" | xargs -I {} cp {} artifact/ || true
+        cp anykernel3.zip artifact/ 2>/dev/null || echo "anykernel3.zip not found"
+        cd artifact
+        sha256sum * > checksum.txt
+
+    - name: Upload Kernel Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: KernelSU-A31-${{ github.run_number }}
+        path: artifact/*
+
+    - name: Create GitHub Release (if tag provided)
+      if: github.event.inputs.release_tag != ''
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.release_tag }}
+        name: KernelSU Build - ${{ github.event.inputs.release_tag }}
+        files: |
+          artifact/*
+        draft: false
+        prerelease: false
