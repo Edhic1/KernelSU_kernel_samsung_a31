@@ -36,7 +36,7 @@ jobs:
         fi
 
     - name: Free Disk Space (Optional)
-      if: env.REMOVE_UNUSED_PACKAGES == 'true' || env.REMOVE_UNUSED_PACKAGES == ''
+      if: ${{ env.REMOVE_UNUSED_PACKAGES == 'true' || env.REMOVE_UNUSED_PACKAGES == '' }}
       uses: jlumbroso/free-disk-space@main
       with:
         tool-cache: true
@@ -48,7 +48,7 @@ jobs:
         swap-storage: false
 
     - name: Set Swap Space (6GB)
-      uses: pierotofy/set-swap-space@master
+      uses: pierotofy/set-swap-space@v1
       with:
         swap-size-gb: 6
 
@@ -93,7 +93,7 @@ jobs:
         path: artifact/*
 
     - name: Create GitHub Release (if tag provided)
-      if: github.event.inputs.release_tag != ''
+      if: ${{ github.event.inputs.release_tag != '' }}
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.event.inputs.release_tag }}
