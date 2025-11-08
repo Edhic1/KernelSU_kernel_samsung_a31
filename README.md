@@ -1,8 +1,8 @@
 # KernelSU Kernel for Samsung Galaxy A31
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Edhic1/KernelSU_kernel_samsung_a31/build.yml?branch=kernel_su)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/actions/workflows/build.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Edhic1/KernelSU_kernel_samsung_a31/build-kernel.yml?branch=kernel_su)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/actions/workflows/build-kernel.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/Edhic1/KernelSU_kernel_samsung_a31)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/releases)
-[![License](https://img.shields.io/github/license/Edhic1/KernelSU_kernel_samsung_a31)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/blob/kernel_su/LICENSE)
+[![License](https://img.shields.io/github/license/Edhic1/KernelSU_kernel_samsung_a31?label=license)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/blob/kernel_su/LICENSE)
 
 This repository contains a custom Linux kernel for the Samsung Galaxy A31 (SM-A315F/G/N), based on the official Samsung sources with integrated KernelSU support. KernelSU provides a modern, kernel-based root solution as an alternative to traditional tools like Magisk.
 
