@@ -81,11 +81,10 @@ jobs:
     - name: Prepare Artifact
       run: |
         mkdir -p artifact
-        find out/arch/arm64/boot -name "Image*" -o -name "*.gz" -o -name "*.dtb" | xargs -I {} cp {} artifact/ || true
+        find a31/arch/arm64/boot -name "Image*" -o -name "*.gz" -o -name "*.dtb" | xargs -I {} cp {} artifact/ || true
         cp anykernel3.zip artifact/ 2>/dev/null || echo "anykernel3.zip not found"
         cd artifact
-        sha256sum * > checksum.txt
-
+        sha256sum * > checksum.txt || echo "No files to checksum"
     - name: Upload Kernel Artifact
       uses: actions/upload-artifact@v4
       with:
