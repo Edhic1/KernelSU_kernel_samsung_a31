@@ -50,6 +50,6 @@ if [ "${WITH_OUTDIR}" == true ]; then
 fi
 
 if [ "${WITH_OUTDIR}" == true ]; then
-   "${CCACHE}" make O="$(pwd)/a31" a31_ksu_defconfig
+   "${CCACHE}" make O="$(pwd)/a31" a31_next_defconfig
    "${CCACHE}" make -j`nproc` O="$(pwd)/a31"
 fi
