@@ -7,6 +7,12 @@
 [[ -d "$(pwd)/gcc/" ]] || git clone https://github.com/VH-Devices/toolchains -b gcc-10.3.0 gcc --depth 1 >> /dev/null 2> /dev/null
 [[ -d "$(pwd)/clang/" ]] || git clone https://github.com/kdrag0n/proton-clang clang --depth 1 >> /dev/null 2> /dev/null
 
+# Backport set_memory.h from MTK 4.19 for SukiSU on 4.14
+curl -LSs "https://raw.githubusercontent.com/MediaTek-Labs/common-kernel-4.19/master/include/linux/set_memory.h" -o include/linux/set_memory.h.mtk
+cp include/linux/set_memory.h.mtk include/linux/set_memory.h
+rm include/linux/set_memory.h.mtk
+echo "Backported MTK 4.19 set_memory.h"
+
 # Clone SukiSU-Ultra setup (non-GKI for A31)
 curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
 
