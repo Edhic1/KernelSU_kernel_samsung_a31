@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Written by Hakalle (Velosh) <hakalle@proton.me>.
+# Modified for SukiSU-Ultra integration.
 
 # Clone GCC & Proton Clang.
 [[ -d "$(pwd)/gcc/" ]] || git clone https://github.com/VH-Devices/toolchains -b gcc-10.3.0 gcc --depth 1 >> /dev/null 2> /dev/null
 [[ -d "$(pwd)/clang/" ]] || git clone https://github.com/kdrag0n/proton-clang clang --depth 1 >> /dev/null 2> /dev/null
 
-# Clone KernelSU
-# patch -p1 < kernelsu.patch
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/954e06bbcced365807cc23d8f1174ebfa193babb/kernel/setup.sh" | bash -
+# Clone SukiSU-Ultra setup (non-GKI for A31)
+curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
 
 # Export KBUILD_BUILD_{USER,HOST} flags.
 export KBUILD_BUILD_USER="zyzoh"
@@ -51,6 +51,6 @@ if [ "${WITH_OUTDIR}" == true ]; then
 fi
 
 if [ "${WITH_OUTDIR}" == true ]; then
-   "${CCACHE}" make O="$(pwd)/a31" a31_ksu_defconfig
+   "${CCACHE}" make O="$(pwd)/a31" a31_sukisu_defconfig  # Update to your new defconfig name
    "${CCACHE}" make -j`nproc` O="$(pwd)/a31"
 fi
