@@ -1,5 +1,7 @@
 # KernelSU Kernel for Samsung Galaxy A31
 
+![logo](https://i.postimg.cc/ZRHYyfxX/A31-Card-Kernel.png)
+
 [![Build Status](https://img.shields.io/github/actions/workflow/status/Edhic1/KernelSU_kernel_samsung_a31/build-kernel.yml?branch=kernel_su)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/actions/workflows/build-kernel.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/Edhic1/KernelSU_kernel_samsung_a31)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/releases)
 [![License](https://img.shields.io/github/license/Edhic1/KernelSU_kernel_samsung_a31?label=license)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/blob/kernel_su/LICENSE)
