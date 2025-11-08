@@ -6,9 +6,8 @@
 [[ -d "$(pwd)/gcc/" ]] || git clone https://github.com/VH-Devices/toolchains -b gcc-10.3.0 gcc --depth 1 >> /dev/null 2> /dev/null
 [[ -d "$(pwd)/clang/" ]] || git clone https://github.com/kdrag0n/proton-clang clang --depth 1 >> /dev/null 2> /dev/null
 
-# Clone KernelSU
-# patch -p1 < kernelsu.patch
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/954e06bbcced365807cc23d8f1174ebfa193babb/kernel/setup.sh" | bash -
+# Use KernelSU Next (non-GKI branch)
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/next/kernel/setup.sh" | bash -s nongki
 
 # Export KBUILD_BUILD_{USER,HOST} flags.
 export KBUILD_BUILD_USER="zyzoh"
