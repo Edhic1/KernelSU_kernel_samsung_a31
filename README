@@ -1,18 +1,92 @@
-Linux kernel
-============
+# KernelSU Kernel for Samsung Galaxy A31
 
-This file was moved to Documentation/admin-guide/README.rst
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Edhic1/KernelSU_kernel_samsung_a31/build.yml?branch=kernel_su)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/actions/workflows/build.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/Edhic1/KernelSU_kernel_samsung_a31)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/releases)
+[![License](https://img.shields.io/github/license/Edhic1/KernelSU_kernel_samsung_a31)](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/blob/kernel_su/LICENSE)
 
-Please notice that there are several guides for kernel developers and users.
-These guides can be rendered in a number of formats, like HTML and PDF.
+This repository contains a custom Linux kernel for the Samsung Galaxy A31 (SM-A315F/G/N), based on the official Samsung sources with integrated KernelSU support. KernelSU provides a modern, kernel-based root solution as an alternative to traditional tools like Magisk.
 
-In order to build the documentation, use ``make htmldocs`` or
-``make pdfdocs``.
+**Disclaimer:** Building and flashing custom kernels can void your warranty and potentially brick your device. Proceed at your own risk. Always back up your data and have a recovery plan (e.g., stock firmware via Odin).
 
-There are various text files in the Documentation/ subdirectory,
-several of them using the Restructured Text markup notation.
-See Documentation/00-INDEX for a list of what is contained in each file.
+## Features
+- **KernelSU Integration**: Built-in support for root access via KernelSU. Install the KernelSU manager app after flashing to manage root permissions and modules.
+- **Based on LineageOS 19.1**: Compatible with Android 12-based ROMs.
+- **MediaTek MT6768 Chipset Support**: Optimized for the Helio P65 SoC in the Galaxy A31.
+- **Automated Builds**: Use GitHub Actions to build the kernel and generate flashable ZIPs via AnyKernel3.
+- **Patches Applied**: Includes `kernelsu.patch` for seamless KernelSU hooks in file system operations.
 
-Please read the Documentation/process/changes.rst file, as it contains the
-requirements for building and running the kernel, and information about
-the problems which may result by upgrading your kernel.
+## Prerequisites
+- Unlocked bootloader on your Samsung Galaxy A31.
+- Custom recovery installed (e.g., TWRP or OrangeFox for A31).
+- Familiarity with ADB, Fastboot, and Odin for recovery in case of issues.
+
+## Usage
+### Downloading Pre-Built Kernels
+- Head to the [Releases](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/releases) page.
+- Download the latest `KernelSU-A31-Flashable.zip`.
+- Boot into recovery and flash the ZIP.
+- Reboot and install the [KernelSU Manager APK](https://github.com/tiann/KernelSU/releases) to enable root.
+
+### Building from Source
+This repo uses GitHub Actions for automated builds, but you can build locally if preferred.
+
+#### Local Build
+1. Set up a Linux environment (e.g., Ubuntu 22.04) with dependencies:
+   ```
+   sudo apt install git ccache bc bison build-essential curl flex libelf-dev libssl-dev lz4 ncurses-dev pahole python3 unzip wget xz-utils zstd clang lld
+   ```
+2. Clone the repo:
+   ```
+   git clone https://github.com/Edhic1/KernelSU_kernel_samsung_a31 -b kernel_su
+   cd KernelSU_kernel_samsung_a31
+   ```
+3. Download toolchain (e.g., Proton-Clang):
+   ```
+   mkdir toolchains && cd toolchains
+   git clone https://github.com/kdrag0n/proton-clang --depth=1
+   export PATH="$PWD/bin:$PATH"
+   cd ..
+   ```
+4. Build:
+   ```
+   chmod +x buildKernel.sh
+   ./buildKernel.sh
+   ```
+5. The output will be in `a31/arch/arm64/boot/` (e.g., `Image.gz`, `mt6768.dtb`).
+
+#### Automated Build via GitHub Actions
+1. Fork this repo or use your existing fork.
+2. Go to the [Actions](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/actions) tab.
+3. Select the "Build KernelSU Kernel" workflow and run it (optionally provide a release tag).
+4. Download artifacts from the run summary, including the flashable ZIP.
+
+### Packaging with AnyKernel3
+To create a flashable ZIP:
+1. Combine kernel files:
+   ```
+   cat a31/arch/arm64/boot/Image.gz a31/arch/arm64/boot/mt6768.dtb > Image.gz-dtb
+   ```
+2. Clone and use the customized AnyKernel3 fork:
+   ```
+   git clone https://github.com/Edhic1/AnyKernel3 -b Samsung_A31
+   cd AnyKernel3
+   cp ../Image.gz-dtb .
+   zip -r9 KernelSU-A31-Flashable.zip * -x .git README.md *placeholder
+   ```
+3. Flash the resulting ZIP in recovery.
+
+## Credits
+- [DevZillion](https://github.com/DevZillion/android_kernel_samsung_a31): Original KernelSU fork.
+- [KernelSU Team](https://github.com/tiann/KernelSU): For the KernelSU project.
+- [osm0sis](https://github.com/osm0sis/AnyKernel3): AnyKernel3 packaging tool.
+- Samsung: For open-source kernel code.
+- LineageOS: Base for the kernel configuration.
+
+## License
+This kernel is licensed under the [GPL-2.0](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/blob/kernel_su/LICENSE). KernelSU modifications are under their respective licenses.
+
+## Contributing
+Pull requests are welcome for bug fixes, optimizations, or additional features. Please test thoroughly on a Galaxy A31 device.
+
+## Support
+For issues, open a GitHub issue here. For device-specific help, check XDA Developers forums for the Samsung Galaxy A31.
