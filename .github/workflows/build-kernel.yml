@@ -58,7 +58,7 @@ jobs:
         sudo apt install -y \
           bc bison build-essential ccache curl flex git libelf-dev \
           libssl-dev lz4 ncurses-dev python3 unzip wget xz-utils zstd \
-          clang lld libstdc++-12-dev lib32z1-dev gcc-multilib g++-multilib
+          clang lld libstdc++-12-dev lib32z1-dev gcc-multilib g++-multilib zip
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -78,13 +78,25 @@ jobs:
         chmod +x buildKernel.sh
         ./buildKernel.sh
 
+    - name: Create Image.gz-dtb
+      run: |
+        cat a31/arch/arm64/boot/Image.gz a31/arch/arm64/boot/mt6768.dtb > a31/arch/arm64/boot/Image.gz-dtb || echo "DTB append failed or files missing"
+
+    - name: Package with AnyKernel3
+      run: |
+        git clone https://github.com/Edhic1/AnyKernel3 -b Samsung_A31 anykernel
+        cd anykernel
+        cp ../a31/arch/arm64/boot/Image.gz-dtb .
+        zip -r9 ../KernelSU-A31-Flashable.zip * -x .git README.md *placeholder
+
     - name: Prepare Artifact
       run: |
         mkdir -p artifact
+        cp KernelSU-A31-Flashable.zip artifact/ || echo "Flashable ZIP not found"
         find a31/arch/arm64/boot -name "Image*" -o -name "*.gz" -o -name "*.dtb" | xargs -I {} cp {} artifact/ || true
-        cp anykernel3.zip artifact/ 2>/dev/null || echo "anykernel3.zip not found"
         cd artifact
         sha256sum * > checksum.txt || echo "No files to checksum"
+
     - name: Upload Kernel Artifact
       uses: actions/upload-artifact@v4
       with:
