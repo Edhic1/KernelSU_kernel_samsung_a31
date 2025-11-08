@@ -87,12 +87,12 @@ jobs:
         git clone https://github.com/Edhic1/AnyKernel3 -b Samsung_A31 anykernel
         cd anykernel
         cp ../a31/arch/arm64/boot/Image.gz-dtb .
-        zip -r9 ../KernelSU-A31-Flashable.zip * -x .git README.md *placeholder
+        zip -r9 ../KernelSU_Next-A31-Flashable.zip * -x .git README.md *placeholder
 
     - name: Prepare Artifact
       run: |
         mkdir -p artifact
-        cp KernelSU-A31-Flashable.zip artifact/ || echo "Flashable ZIP not found"
+        cp KernelSU_Next-A31-Flashable.zip artifact/ || echo "Flashable ZIP not found"
         find a31/arch/arm64/boot -name "Image*" -o -name "*.gz" -o -name "*.dtb" | xargs -I {} cp {} artifact/ || true
         cd artifact
         sha256sum * > checksum.txt || echo "No files to checksum"
@@ -100,7 +100,7 @@ jobs:
     - name: Upload Kernel Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: KernelSU-A31-${{ github.run_number }}
+        name: KernelSU_Next-A31-${{ github.run_number }}
         path: artifact/*
 
     - name: Create GitHub Release (if tag provided)
@@ -108,7 +108,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.event.inputs.release_tag }}
-        name: KernelSU Build - ${{ github.event.inputs.release_tag }}
+        name: KernelSU Next Build - ${{ github.event.inputs.release_tag }}
         files: |
           artifact/*
         draft: false
