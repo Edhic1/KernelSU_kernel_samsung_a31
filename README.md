@@ -25,9 +25,12 @@ This repository contains a custom Linux kernel for the Samsung Galaxy A31 (SM-A3
 ## Usage
 ### Downloading Pre-Built Kernels
 - Head to the [Releases](https://github.com/Edhic1/KernelSU_kernel_samsung_a31/releases) page.
-- Download the latest `KernelSU-A31-Flashable.zip`.
+- Download the latest `KernelSU-A31-Flashable.zip` or `KernelSU_Next-A31-Flashable.zip`.
 - Boot into recovery and flash the ZIP.
-- Reboot and install the [KernelSU Manager APK](https://github.com/tiann/KernelSU/releases) to enable root.
+- Reboot and install the [KernelSU Manager V.0.9.5 APK](https://github.com/tiann/KernelSU/releases/download/v0.9.5/KernelSU_v0.9.5_11872-release.apk) or [KernelSU Next APK](https://github.com/KernelSU-Next/KernelSU-Next/releases) to enable root.
+
+- Note:
+   Flash fbe disabler then format data then KernelSU 
 
 ### Building from Source
 This repo uses GitHub Actions for automated builds, but you can build locally if preferred.
