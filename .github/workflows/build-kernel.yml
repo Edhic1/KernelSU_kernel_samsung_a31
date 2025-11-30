@@ -1,5 +1,11 @@
 name: Build KernelSU Kernel
 on:
+  push:
+    branches:
+      - kernel_su
+  pull_request:
+    branches:
+      - kernel_su
   workflow_dispatch:
     inputs:
       release_tag:
